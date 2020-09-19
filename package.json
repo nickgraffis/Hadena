@@ -1,0 +1,24 @@
+{
+  "name": "Hadena",
+  "version": "1.0.0",
+  "description": "Colorful application to help you find colors in the world, covert colors into various forms of representation, and better develop color palettes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickgraffis/Hadena.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickgraffis/Hadena/issues"
+  },
+  "homepage": "https://github.com/nickgraffis/Hadena#readme",
+  "dependencies": {
+    "bulma": "^0.9.0",
+    "hadenajs": "^1.0.5"
+  }
+}

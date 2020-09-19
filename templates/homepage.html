@@ -1,0 +1,43 @@
+<section class="hero is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+          <div class="div columns">
+              <div class="div column">
+
+              </div>
+              <div class="column is-two-thirds">
+                  <nav class="level">
+                    <div class="level-item">
+                        <div class="level-item">
+                                <figure class="image is-128x128" style="padding-top: 20px;" data-include="/components/koi">
+
+                                </figure>
+                            </div>
+                            <div class="level-item has-text-centered" style="padding-left: 10px;">
+                                <h1 class="has-text-grey-dark has-text-weight-bold" style="font-size: 50px; padding-right: 30px;">
+                                   ${application.title}
+                                </h1>
+                            </div>
+                    </div>
+                  </nav>
+                  <div class="level-item has-text centered">
+                        <div class="control has-icons-left">
+                            <form action="/search">
+                                <input id="imagesHome" name="q" class="input is-rounded is-medium" type="text" placeholder="" style="border: none; box-shadow: 0 0 30px 0 rgba(43,86,112,.1); background-image: url(/1f79b2a….svg) no-repeat 1.8rem 50%; background-color: #fff; width: 50rem; max-width: 50rem; font-size: 30px;">
+                                <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1">
+                                <span class="icon is-left is-large" style="padding-top: 25px; padding-left: 10px;">
+                                    <i class="fas fa-search" style="font-size: 30px;"></i>
+                                </span>
+                            </form>
+                        </div>
+                    </div>
+              </div>
+              <div class="column">
+
+              </div>
+          </div>
+        </div>
+    </div>
+    <div class="hero-foot" @include="/components/footer">
+    </div>
+</section>
