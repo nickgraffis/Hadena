@@ -4,7 +4,9 @@
   "description": "Colorful application to help you find colors in the world, covert colors into various forms of representation, and better develop color palettes.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass assets/styles/index.scss -o assets/styles/css",
+    "scss-watch": "node-sass --watch assets/styles/index.scss -o assets/styles/css"
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,10 @@
   },
   "homepage": "https://github.com/nickgraffis/Hadena#readme",
   "dependencies": {
+    "@nickgraffis/kmeans": "^1.0.3",
     "bulma": "^0.9.0",
-    "hadenajs": "^1.0.5"
+    "hadenajs": "^1.0.7",
+    "matematik": "^1.0.9",
+    "node-sass": "^4.14.1"
   }
 }
