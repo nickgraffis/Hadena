@@ -1,4 +1,60 @@
 <section class="hero is-fullheight">
+  <div class="hero-header">
+    <nav class="navbar is-spaced">
+      <div class="navbar-brand" style="opacity: 0;">
+          <div class="navbar-item">
+          <!-- <a href="/" style="colo"> -->
+              <nav class="level">
+                  <div class="level-item">
+                      <prototype-koi></prototype-koi>
+                  </div>
+                  <div class="level-item has-text-centered" style="padding-left: 10px;">
+                      <h1 class="has-text-weight-bold logo">
+                          派手な HADENA
+                      </h1>
+                  </div>
+              </nav>
+          <!-- </a> -->
+          </div>
+          <div class="navbar-item">
+              <div class="control has-icons-left search_form">
+                  <form onsubmit="search(document.querySelector('#images').value) return false;">
+                      <input id="images" class="input is-rounded is-medium search_bar" type="text" placeholder="forest, water, desert, etc..">
+                      <input type="submit" class="search_enter" tabindex="-1">
+                      <span class="icon is-left is-medium">
+                          <i class="fas fa-search"></i>
+                      </span>
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <a href="">
+            <i class="fab fa-npm"></i>
+          </a>
+        </div>
+        <div class="navbar-item">
+          <a href="">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="navbar-item">
+          <a href="">
+            <i class="fas fa-hand-spock"></i>
+          </a>
+        </div>
+        <div class="navbar-item">
+    			<a class="sun" id="colormode" onclick="changeColorMode()">
+    				<span class="fa-stack fa-1x">
+    					<i class="far fa-circle fa-stack-2x sun-icon-border" id="border"></i>
+    				  	<i class="fa fa-sun fa-stack-1x" id="color-icon"></i>
+    				</span>
+    			</a>
+    		</div>
+      </div>
+    </nav>
+  </div>
     <div class="hero-body">
         <div class="container">
           <div class="div columns">
@@ -6,14 +62,11 @@
 
               </div>
               <div class="column is-two-thirds">
-                  <nav class="level">
-                    <div class="level-item">
+                  <nav class="level" id="logo-wrapper">
+                    <div class="level-item" id="level-logo">
                         <div class="level-item">
                                 <figure class="image is-128x128" style="padding-top: 20px;">
                                     <svg id="koi" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 433 286" style="enable-background:new 0 0 433 286; fill: #0E95ED;" xml:space="preserve">
-                                    <style type="text/css">
-                                        .st0{fill:#FFFFFF;}
-                                    </style>
                                     <g>
                                         <g>
                                             <path class="st0" d="M0,207C0,138,0,69,0,0c144.3,0,288.7,0,433,0c0,56.4,0,112.7,0,169c-0.7-0.8-1.8-1.5-1.9-2.4
@@ -187,19 +240,19 @@
                                     </svg>
                                 </figure>
                             </div>
-                            <div class="level-item has-text-centered" style="padding-left: 10px;">
-                                <h1 class="has-text-grey-dark has-text-weight-bold" style="font-size: 50px; padding-right: 30px;">
+                            <div class="level-item has-text-centered" style="padding-left: 20px;">
+                                <h1 class="has-text-weight-bold" style="font-size: 50px; padding-right: 30px;">
                                    派手な HADENA
                                 </h1>
                             </div>
                     </div>
                   </nav>
-                  <div class="level-item has-text centered">
-                        <div class="control has-icons-left">
+                  <div class="level-item has-text centered" id="home-form-wrapper">
+                        <div class="control has-icons-left" id="home-form-control">
                             <form id="homeform">
-                                <input id="imagesHome" name="q" class="input is-rounded is-medium" type="text" placeholder="" style="border: none; box-shadow: 0 0 30px 0 rgba(43,86,112,.1); background-image: url(/1f79b2a….svg) no-repeat 1.8rem 50%; background-color: #fff; width: 50rem; max-width: 50rem; font-size: 30px;">
+                                <input id="imagesHome" name="q" class="input is-rounded is-medium" type="text" placeholder="">
                                 <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1">
-                                <span class="icon is-left is-large" style="padding-top: 25px; padding-left: 10px;">
+                                <span class="icon is-left is-large icon-search" style="padding-top: 25px; padding-left: 10px;">
                                     <i class="fas fa-search" style="font-size: 30px;"></i>
                                 </span>
                             </form>
@@ -209,6 +262,65 @@
               <div class="column">
 
               </div>
+          </div>
+          <div class="columns demo-wrapper">
+            <div class="column demo_one">
+              <div class="box color_box short">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+              <div class="box color_box long">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="column demo_two">
+              <div class="box color_box medium">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+              <div class="box color_box short">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="column demo_three">
+              <div class="box color_box long">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="column demo_four">
+              <div class="box color_box medium">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+              <div class="box color_box short">
+                <article class="media" style="display: flex; height: 90%;">
+                  <div class="media-content">
+
+                  </div>
+                </article>
+              </div>
+            </div>
           </div>
         </div>
     </div>
