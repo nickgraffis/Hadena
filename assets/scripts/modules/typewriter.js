@@ -32,8 +32,8 @@ function sleep(ms) {
 * typeWriter types as long as the counter is not the same as the length of the word it's typing
 * When the counter gets to the end of the word we "sleep", change the color of the koi, "sleep" again, then find a new word, reset the counter and reset the placeholder variable
 */
-async function typeWriter() {
-  if (document.querySelector('#imagesHome')) {
+async function typeWriter(question) {
+  if (document.querySelector('#imagesHome') && !document.querySelector('#results')) {
     if (i < txt[0].length)
     {
         document.querySelector("#imagesHome").placeholder += txt[0][i];

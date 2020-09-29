@@ -3,7 +3,7 @@ const prototype = require('./modules/prototype.js');
 const typewriter = require('./modules/typewriter.js');
 const darktheme = require('./modules/darktheme.js');
 
-},{"./modules/darktheme.js":2,"./modules/prototype.js":3,"./modules/typewriter.js":5}],2:[function(require,module,exports){
+},{"./modules/darktheme.js":2,"./modules/prototype.js":4,"./modules/typewriter.js":6}],2:[function(require,module,exports){
 var color = 'sun';
 
 window.changeColorMode = function () {
@@ -19,21 +19,163 @@ window.changeColorMode = function () {
 }
 
 },{}],3:[function(require,module,exports){
+const hadena = require('hadenajs');
+const math = require('matematik');
+const work = require('webworkify')
+const w = work(require('./worker.js'));
+
+w.addEventListener('message', ({data}) => {
+  console.log(data);
+    fillPalette(data);
+});
+
+var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyACjaZLemAxecYCv5rZM_JQBIcEwM7t6NE&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)";
+var items = {};
+function search (query) {
+  items = {};
+  var request = url + "&q=" + query;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      items = JSON.parse(xhttp.responseText).items;
+      more(query, 11);
+    }
+  };
+xhttp.open("GET", request, true);
+xhttp.send();
+}
+
+/*
+* Get 10 more requests starting from startNumber and push() them to items object
+*/
+function more (query, startNumber) {
+  var request = url + "&start=" + startNumber + "&q=" + query;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      for (let i = 0; i < 10; i++) {
+        item = JSON.parse(xhttp.responseText).items[i];
+        items.push(item);
+      }
+      show(items, 0);
+    }
+  };
+xhttp.open("GET", request, true);
+xhttp.send();
+}
+
+/*
+* For each box, there are 20...
+* Create a new ColorThief() object
+* Create a new Image() object
+* Add Google Proxy URL and image URL to Image() object, and set Cross Origin permission to Anonymous
+* Turn the resulting ColorThief() color to a HEX and change the background color of the box to that color
+* Add the HEX number to the box as text
+* Determine if the color is lightOrDark and change the text color of the box to be the opposite
+* Change the color of the koi logo to the first color
+* Log errors
+*/
+function show (items, startNumber) {
+  for (let i = 0; i < 20; i++) {
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    let img = new Image();
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    img.crossOrigin = 'Anonymous';
+    img.src = googleProxyURL + encodeURIComponent(items[i].link);
+    console.log(items[i].link);
+    img.onload = function () {
+      let num = math.englishify(i);
+      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+      let aspectRatio = img.height / img.width;
+      canvas.width = 100;
+      canvas.height = aspectRatio * canvas.width;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let palette = hadena.extractColorPalette(canvas, 1);
+      let hex = hadena.fullColorHex(palette[0].r, palette[0].g, palette[0].b);
+      document.querySelector("#" + num + "bg").style.backgroundColor = "#" + hex;
+      document.querySelector("#" + num + "palette").style.backgroundColor = "#" + hex;
+      var attribute = {image: items[i].link, color: "#" + hex};
+      document.querySelector("#" + num + "bg").setAttribute('data-attribute', JSON.stringify(attribute));
+      document.querySelector("#" + num).innerHTML = "#" + hex;
+      if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
+        document.querySelector("#" + num + "bg").style.color = "#242424";
+        document.querySelector("#" + num + "alert").style.color = "#242424";
+        document.querySelector("#" + num + "palette").style.color = "#242424";
+      } else if (hadena.getColorMood("#" + hex, 4) === 'LIGHT') {
+          document.querySelector("#" + num + "bg").style.color = "#363636";
+          document.querySelector("#" + num + "alert").style.color = "#363636";
+          document.querySelector("#" + num + "palette").style.color = "#363636";
+      } else if (hadena.getColorMood("#" + hex, 4) === 'DIM') {
+        document.querySelector("#" + num + "bg").style.color = "#B5B5B5";
+        document.querySelector("#" + num + "alert").style.color = "#B5B5B5";
+        document.querySelector("#" + num + "palette").style.color = "#B5B5B5";
+      } else {
+        document.querySelector("#" + num + "bg").style.color = "#F5F5F5";
+        document.querySelector("#" + num + "alert").style.color = "#F5F5F5";
+        document.querySelector("#" + num + "palette").style.color = "#F5F5F5";
+      }
+      if (i === 0) {
+        if (document.getElementById("koi")){
+          document.getElementById("koi").style.fill = "#" + hex;
+        } else if (document.getElementById("small-koi")) {
+          document.getElementById("small-koi").style.fill = "#" + hex;
+        }
+      }
+    }
+  }
+  let pixels = [];
+  for (let i = 0; i < 20; i++) {
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    let img = new Image();
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    img.crossOrigin = 'Anonymous';
+    img.src = googleProxyURL + encodeURIComponent(items[i].link);
+    img.onload = function () {
+      let num = math.englishify(i);
+      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+      let aspectRatio = img.height / img.width;
+      canvas.width = 100;
+      canvas.height = aspectRatio * canvas.width;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      pixels.push(hadena.extractPixelData(canvas));
+    }
+  }
+  var timeout = setInterval(function() {
+      console.log('checking');
+    if(pixels.length > 15) { //It might never reach 20 if there is an issue with the image
+      console.log(pixels);
+      w.postMessage({data: pixels});
+      clearInterval(timeout);
+    }
+}, 100);
+}
+
+
+function fillPalette (palette) {
+console.log(palette);
+  for (let i = 0; i < palette.length; i++) {
+    let num = math.englishify(i);
+      for (let k = 0; k < 6; k++) {
+        console.log(palette[i][k]);
+        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").setAttribute('data-color', "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b));
+        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").style.color = "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b);
+      }
+    }
+}
+
+module.exports = {
+  search: search
+}
+
+},{"./worker.js":7,"hadenajs":9,"matematik":10,"webworkify":11}],4:[function(require,module,exports){
 const __ = require('./router.js');
 const time = require('./typewriter.js');
+const _s_ = require('./imagesearch.js');
+const math = require('matematik');
 
 const application = document.getElementById('application');
-
-async function homeSearch (event) {
-  var parmas = document.querySelector('#imagesHome').value;
-  event.preventDefault();
-  document.getElementById('logo-wrapper').style.animation = 'move-logo 4s ease-in-out';
-  document.getElementById('level-logo').style.animation = 'scale-logo 4s ease-in-out';
-  document.getElementById('home-form-control').style.animation = 'move-search 4s ease-in-out';
-  document.getElementById('home-form-wrapper').style.animation = 'scale-search 4s ease-in-out';
-  await time.sleep(4000);
-  // window.history.pushState({page: 1}, "title 1", '/#/s/' + parmas);
-}
 
 const router = new __.Router({
   mode: 'hash',
@@ -59,7 +201,14 @@ function prototypeFooter () {
 * Fill in the footer where the <prototype-nav> tag is present
 */
 function prototypeNavbar () {
-  document.querySelector('prototype-nav').innerHTML = getFile('components/navbar.html');
+  document.querySelector('prototype-navbar').innerHTML = getFile('components/navbar.html');
+}
+
+/*
+* Fill in the footer where the <prototype-results> tag is present
+*/
+function prototypeResults () {
+  document.querySelector('prototype-results').innerHTML = getFile('components/searchresults.html');
 }
 
 /*
@@ -70,20 +219,66 @@ function prototypeKoi () {
   document.querySelector('prototype-koi').innerHTML = getFile('components/koi.html');
 }
 
-if (document.getElementsByTagName('prototype-footer').length > 0) {
-  prototypeFooter();
+/*
+* Fill in rows and columns of boxes until we get to 20 boxes
+* Each box needs an identifier between zero and nineteen
+* Each box needs a random choice between class of "short", "medium", or "long"
+*/
+function prototypeBoxes () {
+  var sizes = ["short", "medium", "long"];
+  var count = 0;
+  var file = getFile('components/box.html');
+  for (let j = 0; j < 20; j = j + 5)
+  {
+    for (let i = 0; i < 5; i++)
+    {
+      document.querySelector("#row" + math.englishify(count)).innerHTML += eval('`' + file + '`');
+    }
+    count++;
+  }
 }
 
-if (document.getElementsByTagName('prototype-nav').length > 0) {
-  prototypeNavbar();
+/*
+* Fill in the footer where the <prototype-footer> tag is present
+*/
+function prototypeFooter () {
+
+  document.querySelector('prototype-footer').innerHTML = '<div class="hero-foot"><div class="content has-text-centered"><p><strong>派手な HADENA</strong> by <a href="https://twitter.com/nickgraffistwit">Nick Graffis</a>. Learn about the project<a href="/code"> here</a>.</p></div></div>';
+
+}
+
+async function homeSearch (event) {
+  var params = document.querySelector('#imagesHome').value;
+  event.preventDefault();
+  document.getElementsByClassName('demo-wrapper')[0].style.opacity = 0;
+  document.getElementById('logo-wrapper').style.animation = 'move-logo 2s ease-in-out forwards';
+  document.getElementById('level-logo').style.animation = 'scale-logo 2s ease-in-out forwards';
+  document.getElementById('home-form-control').style.animation = 'move-search 2s ease-in-out forwards';
+  document.getElementById('home-form-wrapper').style.animation = 'scale-search 2s ease-in-out forwards';
+  document.getElementById('hero-body').classList += 'is-paddingless';
+  await time.sleep(2000);
+  prototypeResults();
+  prototypeBoxes();
+  _s_.search(params);
+  document.getElementById('homesearchbody').style.height = '0px';
+  window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
 }
 
 router
   .add(/s\/(.*)/, (params) => {
     console.log(params);
-    application.innerHTML = getFile('templates/search.html');
-    if (document.getElementsByTagName('prototype-koi').length > 0) {
-      prototypeKoi();
+    if (document.getElementById('imagesHome')) {
+      if (document.getElementById('results')) {
+        document.querySelector("#resultText").innerHTML = params;
+      }
+    } else {
+      application.innerHTML = getFile('templates/search.html');
+      if (document.getElementsByTagName('prototype-koi').length > 0) {
+        prototypeKoi();
+      }
+      if (document.getElementsByTagName('prototype-navbar').length > 0) {
+        prototypeNavbar();
+      }
     }
   })
   .add(/products\/(.*)\/specification\/(.*)/, (id, specification) => {
@@ -97,11 +292,16 @@ router
     if (document.getElementsByTagName('prototype-koi').length > 0) {
       prototypeKoi();
     }
+    if (document.getElementsByTagName('prototype-navbar').length > 0) {
+      prototypeNavbar();
+      document.getElementById('navigation-brand').style.opacity = 0;
+      document.getElementById('navigation-search').style.opacity = 0;
+    }
     const homeform = document.querySelector('#homeform');
     homeform.addEventListener("submit", homeSearch);
   });
 
-},{"./router.js":4,"./typewriter.js":5}],4:[function(require,module,exports){
+},{"./imagesearch.js":3,"./router.js":5,"./typewriter.js":6,"matematik":10}],5:[function(require,module,exports){
 class Router {
   routes = [];
 
@@ -189,7 +389,7 @@ module.exports = {
   Router: Router
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const math = require('matematik');
 
 /*
@@ -224,8 +424,8 @@ function sleep(ms) {
 * typeWriter types as long as the counter is not the same as the length of the word it's typing
 * When the counter gets to the end of the word we "sleep", change the color of the koi, "sleep" again, then find a new word, reset the counter and reset the placeholder variable
 */
-async function typeWriter() {
-  if (document.querySelector('#imagesHome')) {
+async function typeWriter(question) {
+  if (document.querySelector('#imagesHome') && !document.querySelector('#results')) {
     if (i < txt[0].length)
     {
         document.querySelector("#imagesHome").placeholder += txt[0][i];
@@ -252,7 +452,418 @@ module.exports = {
   sleep: sleep
 }
 
-},{"matematik":6}],6:[function(require,module,exports){
+},{"matematik":10}],7:[function(require,module,exports){
+const hadena = require('hadenajs');
+
+self.addEventListener('message', ({data}) => {
+  console.log(data.data);
+  let palette = [];
+  for (let i = 0; i < data.data.length; i++) {
+      palette.push(hadena.pixelsToColours(data.data[i], 6));
+    }
+    console.log(palette);
+    self.postMessage(palette);
+})
+
+},{"hadenajs":9}],8:[function(require,module,exports){
+const math = require('matematik');
+
+// Method for comparing arrays (because JavaScript doesn't provide this for some reason)
+Array.prototype.equals = function (array) {
+    // if the other array is a falsy value, return
+    if (!array)
+        return false;
+
+    // compare lengths - can save a lot of time
+    if (this.length != array.length)
+        return false;
+
+    for (var i = 0, l=this.length; i < l; i++) {
+        // Check if we have nested arrays
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!this[i].equals(array[i]))
+                return false;
+        }
+        else if (this[i] != array[i]) {
+            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+            return false;
+        }
+    }
+    return true;
+};
+
+
+// Hide method from for-in loops
+Object.defineProperty(Array.prototype, 'equals', {enumerable: false});
+
+/**
+* Generates a random integer in the closed interval specified by a and b
+* @param {Number} a - lower bound
+* @param {Number} b - upper bound
+* @return {Number} randomInt - random integer generated
+*/
+function randomIntBetween(a, b) {
+    return Math.floor(Math.random() * (b - a + 1)) + a;
+}
+
+/**
+* Initialises the centroids for the k-means algorithm
+* @param {Array} data - data set
+* @param {Number} k - number of clusters/centroids
+* @return {Array} centroids - array of centroid vectors
+*/
+function initialiseCentroidsRandomly(data, k) {
+    var ranges = math.rangesOf(data);
+    var centroids = [];
+    for (let i = 0; i < k; i++) {
+        var centroid = [];
+        for (var r in ranges) {
+            centroid.push(randomIntBetween(ranges[r].min, ranges[r].max));
+        }
+        centroids.push(centroid);
+    }
+    return centroids;
+}
+
+/**
+* Attributes data points to the nearest centroid's cluster
+* @param {Array} data - data set
+* @param {Array} centroids - array of centroid vectors
+* @return {Array} clusters - array of clusters
+*/
+function clusterDataPoints(data, centroids) {
+    var clusters = [];
+    centroids.forEach(function () {
+        clusters.push([]);
+    });
+    data.forEach(function (point) {
+        var nearestCentroid = centroids[0];
+        centroids.forEach(function (centroid) {
+            if (math.euclideanDistance(point, centroid) < math.euclideanDistance(point, nearestCentroid)) {
+                nearestCentroid = centroid;
+            }
+        });
+        clusters[centroids.indexOf(nearestCentroid)].push(point);
+    });
+    return clusters;
+}
+
+/**
+* Calculates the new vectors of the centroids based on their respective clusters
+* @param {Array} clusters - array of clusters
+* @return {Array} centroids - new centroid vectors
+*/
+function getNewCentroids(clusters) {
+    var centroids = [];
+    clusters.forEach(function (cluster) {
+        centroids.push(math.meanPoint(cluster));
+    });
+    return centroids;
+}
+
+/**
+* Performs k-means clustering on a data set
+* @param {Array} data - data set
+* @param {Array} k - number of clusters for data points to be partitioned into
+* @return {Array} clusters - array of clusters (each containing an array of vectors representing a data point)
+*/
+function kMeans(data, k) {
+    var centroids;
+    var clusters;
+    var oldClusters;
+    var converged = false;
+    const iterationLimit = 500;
+    var iterations = 0;
+
+    // STEP ONE: Initialise centroids
+    centroids = initialiseCentroidsRandomly(data, k);
+
+    while (!converged) {
+        // console.log('iterated.');
+        iterations += 1;
+        // STEP TWO: Cluster data points according to nearest centroid (assignment step)
+        oldClusters = clusters;
+        clusters = clusterDataPoints(data, centroids);
+
+        // Check for empty clusters. If so, just retry!
+        if (clusters.some(x => x.length == 0)) {
+            // console.log('Empty clusters found. Restarting k-means.');
+            return kMeans(data, k);
+        }
+
+        // console.log(iterations, iterationLimit);
+        if (clusters.equals(oldClusters) || iterations >= iterationLimit) {
+            converged = true;
+        }
+
+        // STEP THREE: Set centroids to mean point of points belonging to their respective clusters (update step)
+        centroids = getNewCentroids(clusters);
+    }
+    // console.log(clusters);
+    return clusters;
+}
+
+module.exports = {
+    kMeans: kMeans
+};
+
+},{"matematik":10}],9:[function(require,module,exports){
+const km = require('@nickgraffis/kmeans');
+const math = require('matematik');
+
+module.exports = {
+    getRandomColor: getRandomColor,
+    getColorMood: getColorMood,
+    extractPixelData: extractPixelData,
+    extractColorPalette: extractColorPalette,
+    fullColorHex: fullColorHex,
+    increaseValueOfRGB: increaseValueOfRGB,
+    increaseValueOfRGB: increaseValueOfRGB,
+    pixelsToColors: pixelsToColors,
+};
+
+function increaseValueOfRGB(colour, percent) {
+    console.log(colour);
+    var hsv = rgbToHSV(colour);
+    console.log(hsv);
+    hsv[2] = lerp(hsv[2], 1, percent);
+    console.log(hsv);
+    return hsvToRGB(hsv);
+}
+
+function increaseValueOfRGB(colour, percent) {
+    console.log(colour);
+    var hsv = rgbToHSV(colour);
+    console.log(hsv);
+    hsv[1] = lerp(hsv[1], 1, percent);
+    console.log(hsv);
+    return hsvToRGB(hsv);
+}
+
+/*
+* Convert one RGB value (Red OR Green OR Blue) to HEX
+*/
+var rgbToHex = function (rgb) {
+  var hex = Number(rgb).toString(16);
+  if (hex.length < 2) {
+    hex = "0" + hex;
+  }
+  return hex;
+};
+
+/*
+* Convert three RGB values (Red, Green, Blue) to HEX
+*/
+var fullColorHex = function (r, g, b) {
+  var red = rgbToHex(r);
+  var green = rgbToHex(g);
+  var blue = rgbToHex(b);
+  return red + green +blue;
+};
+
+/*
+* Convert HEX to RGB
+* Not currently in use...
+*/
+var hexToRBG = function (hex) {
+  let r = 0, g = 0, b = 0;
+
+  // 3 digits
+  if (hex.length == 4) {
+    r = "0x" + hex[1] + hex[1];
+    g = "0x" + hex[2] + hex[2];
+    b = "0x" + hex[3] + hex[3];
+
+  // 6 digits
+  } else if (hex.length == 7) {
+    r = "0x" + hex[1] + hex[2];
+    g = "0x" + hex[3] + hex[4];
+    b = "0x" + hex[5] + hex[6];
+  }
+
+  return "rgb("+ +r + "," + +g + "," + +b + ")";
+}
+
+/*
+* Returns a random color, default is HEX, but can add optional type = 'RGB'
+* Optionally can add an array of colors to pick from
+*/
+function getRandomColor(options = [], type = 'HEX') {
+  if (options.length > 0) {
+    return options[Math.floor(Math.random() * options.length)];
+  }
+  else {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    if (type == 'HEX') {
+      return color;
+    }
+    else {
+      return hexToRBG(color);
+    }
+  }
+}
+
+/*
+* Determine if a color is light or dark
+* Accepts color as HEX or RGB
+* Accepts a specificiity, default of 2, which returns 2 options, LIGHT or DARK
+* You can add specificity of 4 as well
+*/
+function getColorMood(color, specificity = 2) {
+  // Variables for red, green, blue values
+  var r, g, b, hsp;
+
+  // Check the format of the color, HEX or RGB?
+  if (color.match(/^rgb/)) {
+
+      // If RGB, store the red, green, blue values in separate variables
+      color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+      r = color[1];
+      g = color[2];
+      b = color[3];
+  } else {
+
+      // If HEX, convert it to RGB:
+      color = +("0x" + color.slice(1).replace(
+      color.length < 5 && /./g, '$&$&'));
+
+      r = color >> 16;
+      g = color >> 8 & 255;
+      b = color & 255;
+  }
+
+  // HSP (Highly Sensitive Poo) alternative to HSV from http://alienryderflex.com/hsp.html
+  hsp = Math.sqrt( 0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+
+  // Using the HSP value, determine whether the color is light or dark
+  if (specificity == 2) {
+    if (hsp > 127.5) {
+
+      return 'BRIGHT';
+    }
+    else {
+
+        return 'DARK';
+    }
+  }
+
+  if (specificity == 4) {
+    if (hsp > 191) {
+      return 'BRIGHT';
+    }
+    else if (hsp < 191 && hsp > 127.5) {
+      return 'LIGHT';
+    }
+    else if (hsp < 127.5 && hsp > 63.5) {
+      return 'DIM';
+    }
+    else {
+      return 'DARK';
+    }
+  }
+}
+
+function rgbToHSV(colour){
+    r = colour[0]/255, g = colour[1]/255, b = colour[2]/255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, v = max;
+
+    var d = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if (max == min) {
+        h = 0;
+    } else {
+        switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h,s,v];
+}
+
+function hsvToRGB(colour){
+    var r, g, b;
+    var h = colour[0];
+    var s = colour[1];
+    var v = colour[2];
+
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+
+    switch(i % 6){
+    case 0: r = v, g = t, b = p; break;
+    case 1: r = q, g = v, b = p; break;
+    case 2: r = p, g = v, b = t; break;
+    case 3: r = p, g = q, b = v; break;
+    case 4: r = t, g = p, b = v; break;
+    case 5: r = v, g = p, b = q; break;
+    }
+
+    return [r * 255, g * 255, b * 255];
+}
+
+
+function extractPixelData(canvas) {
+    // Separate out RGBA groups
+    const ctx = canvas.getContext('2d');
+    const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let colours = [];
+    for (let i = 0; i < data.length; i += 4) {
+        colours.push([data[i], data[i+1], data[i+2], data[i+3]]);
+    }
+    return colours;
+}
+
+function extractColorPalette(canvas, k) {
+    // Extract raw colours from image
+    const allColours = extractPixelData(canvas);
+
+    // Cluster raw colours
+    const clusters = km.kMeans(allColours, k);
+
+    // Calculate palette (mean colour of each cluster)
+    var totals = clusters.map(x => x.length);
+    var total = totals.reduce(function(a, b){
+        return a + b;
+    }, 0);
+    const colours = clusters.map(x => ({mean: statsUtils.meanPoint(x), percentage: (x.length / total) * 100}));
+    const palette = colours.map(x => ({r: Math.round(x.mean[0]), g: Math.round(x.mean[1]), b: Math.round(x.mean[2]), a: Math.round(x.mean[3]), p: Math.round(x.percentage)}));
+    // console.log(palette);
+    return palette;
+}
+
+function pixelsToColors(pixels, k) {
+  // Extract raw colours from image
+  const allColours = pixels;
+
+  // Cluster raw colours
+  const clusters = km.kMeans(allColours, k);
+
+  // Calculate palette (mean colour of each cluster)
+  var totals = clusters.map(x => x.length);
+  var total = totals.reduce(function(a, b){
+      return a + b;
+  }, 0);
+  const colours = clusters.map(x => ({mean: statsUtils.meanPoint(x), percentage: (x.length / total) * 100}));
+  const palette = colours.map(x => ({r: Math.round(x.mean[0]), g: Math.round(x.mean[1]), b: Math.round(x.mean[2]), a: Math.round(x.mean[3]), p: Math.round(x.percentage)}));
+  // console.log(palette);
+  return palette;
+}
+
+},{"@nickgraffis/kmeans":8,"matematik":10}],10:[function(require,module,exports){
 module.exports = {
     euclideanDistance : euclideanDistance,
     mean: mean,
@@ -435,5 +1046,87 @@ function rangesOf(data) {
     }
     return ranges;
 }
+
+},{}],11:[function(require,module,exports){
+var bundleFn = arguments[3];
+var sources = arguments[4];
+var cache = arguments[5];
+
+var stringify = JSON.stringify;
+
+module.exports = function (fn, options) {
+    var wkey;
+    var cacheKeys = Object.keys(cache);
+
+    for (var i = 0, l = cacheKeys.length; i < l; i++) {
+        var key = cacheKeys[i];
+        var exp = cache[key].exports;
+        // Using babel as a transpiler to use esmodule, the export will always
+        // be an object with the default export as a property of it. To ensure
+        // the existing api and babel esmodule exports are both supported we
+        // check for both
+        if (exp === fn || exp && exp.default === fn) {
+            wkey = key;
+            break;
+        }
+    }
+
+    if (!wkey) {
+        wkey = Math.floor(Math.pow(16, 8) * Math.random()).toString(16);
+        var wcache = {};
+        for (var i = 0, l = cacheKeys.length; i < l; i++) {
+            var key = cacheKeys[i];
+            wcache[key] = key;
+        }
+        sources[wkey] = [
+            'function(require,module,exports){' + fn + '(self); }',
+            wcache
+        ];
+    }
+    var skey = Math.floor(Math.pow(16, 8) * Math.random()).toString(16);
+
+    var scache = {}; scache[wkey] = wkey;
+    sources[skey] = [
+        'function(require,module,exports){' +
+            // try to call default if defined to also support babel esmodule exports
+            'var f = require(' + stringify(wkey) + ');' +
+            '(f.default ? f.default : f)(self);' +
+        '}',
+        scache
+    ];
+
+    var workerSources = {};
+    resolveSources(skey);
+
+    function resolveSources(key) {
+        workerSources[key] = true;
+
+        for (var depPath in sources[key][1]) {
+            var depKey = sources[key][1][depPath];
+            if (!workerSources[depKey]) {
+                resolveSources(depKey);
+            }
+        }
+    }
+
+    var src = '(' + bundleFn + ')({'
+        + Object.keys(workerSources).map(function (key) {
+            return stringify(key) + ':['
+                + sources[key][0]
+                + ',' + stringify(sources[key][1]) + ']'
+            ;
+        }).join(',')
+        + '},{},[' + stringify(skey) + '])'
+    ;
+
+    var URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+
+    var blob = new Blob([src], { type: 'text/javascript' });
+    if (options && options.bare) { return blob; }
+    var workerUrl = URL.createObjectURL(blob);
+    var worker = new Worker(workerUrl);
+    worker.objectURL = workerUrl;
+    return worker;
+};
 
 },{}]},{},[1]);

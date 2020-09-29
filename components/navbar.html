@@ -1,1 +1,56 @@
-
+<nav class="navbar is-spaced">
+  <div class="navbar-brand" id="navigation-brand">
+      <div class="navbar-item">
+      <a href="/" style="colo">
+          <nav class="level">
+              <div class="level-left">
+                <div class="level-item">
+                    <prototype-koi></prototype-koi>
+                </div>
+                <div class="level-item has-text-centered" style="padding-left: 20px;">
+                    <h1 class="has-text-weight-bold" style="font-size: 50px; padding-right: 30px;">
+                        派手な HADENA
+                    </h1>
+                </div>
+              </div>
+          </nav>
+      </a>
+      </div>
+  </div>
+  <div class="navbar-item" id="navigation-search">
+      <div class="control has-icons-left">
+          <form id="searchform">
+              <input id="images" class="input is-rounded is-medium" type="text" placeholder="forest, water, desert, etc..">
+              <input type="submit" class="search_enter" tabindex="-1">
+              <span class="icon is-left is-medium" style="padding-top: 25px; padding-left: 10px;">
+                  <i class="fas fa-search" style="font-size: 30px;"></i>
+              </span>
+          </form>
+      </div>
+  </div>
+  <div class="navbar-end">
+    <div class="navbar-item">
+      <a href="">
+        <i class="fab fa-npm"></i>
+      </a>
+    </div>
+    <div class="navbar-item">
+      <a href="">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="navbar-item">
+      <a href="">
+        <i class="fas fa-hand-spock"></i>
+      </a>
+    </div>
+    <div class="navbar-item">
+      <a class="sun" id="colormode" onclick="changeColorMode()">
+        <span class="fa-stack fa-1x">
+          <i class="far fa-circle fa-stack-2x sun-icon-border" id="border"></i>
+            <i class="fa fa-sun fa-stack-1x" id="color-icon"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+</nav>

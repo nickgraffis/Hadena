@@ -1,92 +1,32 @@
 <section class="hero is-fullheight">
   <div class="hero-header">
-    <nav class="navbar is-spaced">
-        <div class="navbar-brand">
-            <div class="navbar-item">
-            <!-- <a href="/" style="colo"> -->
-                <nav class="level">
-                    <div class="level-item">
-                        <prototype-koi></prototype-koi>
-                    </div>
-                    <div class="level-item has-text-centered" style="padding-left: 10px;">
-                        <h1 class="has-text-weight-bold logo">
-                            派手な HADENA
-                        </h1>
-                    </div>
-                </nav>
-            <!-- </a> -->
-            </div>
-            <div class="navbar-item">
-                <div class="control has-icons-left search_form">
-                    <form onsubmit="search(document.querySelector('#images').value) return false;">
-                        <input id="images" class="input is-rounded is-medium search_bar" type="text" placeholder="forest, water, desert, etc..">
-                        <input type="submit" class="search_enter" tabindex="-1">
-                        <span class="icon is-left is-medium">
-                            <i class="fas fa-search"></i>
-                        </span>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <a href="">
-              <i class="fab fa-npm"></i>
-            </a>
-          </div>
-          <div class="navbar-item">
-            <a href="">
-              <i class="fab fa-github"></i>
-            </a>
-          </div>
-          <div class="navbar-item">
-            <a href="">
-              <i class="fas fa-hand-spock"></i>
-            </a>
-          </div>
-          <div class="navbar-item">
-      			<a class="sun" id="colormode" onclick="changeColorMode()">
-      				<span class="fa-stack fa-1x">
-      					<i class="far fa-circle fa-stack-2x sun-icon-border" id="border"></i>
-      				  	<i class="fa fa-sun fa-stack-1x" id="color-icon"></i>
-      				</span>
-      			</a>
-      		</div>
-        </div>
-    </nav>
+    <prototype-navbar></prototype-navbar>
   </div>
-    <div class="hero-body">
-        <div class="container">
+  <div class="hero-body results">
+      <nav class="level container">
+          <div class="level-left">
+              <div class="level-item has-text-aligned-left">
+                  <h1 class="has-text-grey-dark has-text-weight-bold results_text" id="resultText">waiting...😐</h1>
+              </div>
+          </div>
+      </nav>
+      <div class="columns is-8 is-variable results_boxes">
+          <div class="column" id="rowzero">
 
-        </div>
-    </div>
-  </section>
-    <!-- <section class="hero results">
-    <div class="hero-body is-paddingless">
-        <nav class="level container">
-            <div class="level-left">
-                <div class="level-item has-text-aligned-left">
-                    <h1 class="has-text-grey-dark has-text-weight-bold results_text" id="resultText">waiting...😐</h1>
-                </div>
-            </div>
-        </nav>
-        <div class="columns is-8 is-variable results_boxes">
-            <div class="column" id="rowzero">
+          </div>
+          <div class="column" id="rowone">
 
-            </div>
-            <div class="column" id="rowone">
+          </div>
+          <div class="column" id="rowtwo">
 
-            </div>
-            <div class="column" id="rowtwo">
+          </div>
+          <div class="column" id="rowthree">
 
-            </div>
-            <div class="column" id="rowthree">
-
-            </div>
-        </div>
-    </div>
+          </div>
+      </div>
 </div>
-</section> -->
+  </section>
+</section>
 <footer class="footer">
 <prototype-footer></prototype-footer>
 </footer>

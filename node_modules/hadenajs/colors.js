@@ -221,7 +221,7 @@ function extractColorPalette(canvas, k) {
     const allColours = extractPixelData(canvas);
 
     // Cluster raw colours
-    const clusters = clustering.kMeans(allColours, k);
+    const clusters = km.kMeans(allColours, k);
 
     // Calculate palette (mean colour of each cluster)
     var totals = clusters.map(x => x.length);
@@ -239,7 +239,7 @@ function pixelsToColors(pixels, k) {
   const allColours = pixels;
 
   // Cluster raw colours
-  const clusters = clustering.kMeans(allColours, k);
+  const clusters = km.kMeans(allColours, k);
 
   // Calculate palette (mean colour of each cluster)
   var totals = clusters.map(x => x.length);
