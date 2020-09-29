@@ -40,6 +40,12 @@
 #results {
   background-color: var(--color-search); }
 
+#level-logo {
+  transition: opacity 1s ease; }
+
+#navbar-search {
+  transition: opacity 1s ease; }
+
 #imagesHome {
   border: none;
   box-shadow: 0 0 30px 0 rgba(43, 86, 112, 0.1);
@@ -48,7 +54,8 @@
   max-width: 50rem;
   font-size: 30px;
   z-index: 1;
-  color: var(--color-font); }
+  color: var(--color-font);
+  transition: opacity 1s ease; }
 
 #images {
   border: none;
@@ -62,7 +69,8 @@
 
 #level-navbrand {
   transform: scale(0.65);
-  margin-left: -5vw; }
+  margin-left: -5vw;
+  transition: opacity 1s ease; }
 
 #searchform {
   transform: scale(0.7); }

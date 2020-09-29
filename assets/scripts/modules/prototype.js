@@ -78,6 +78,8 @@ function prototypeFooter () {
 async function homeSearch (event) {
   var params = document.querySelector('#imagesHome').value;
   event.preventDefault();
+  var images = _s_.getImages(params);
+  console.log(images);
   document.getElementsByClassName('demo-wrapper')[0].style.opacity = 0;
   document.getElementById('logo-wrapper').style.animation = 'move-logo 2s ease-in-out forwards';
   document.getElementById('level-logo').style.animation = 'scale-logo 2s ease-in-out forwards';
@@ -87,7 +89,7 @@ async function homeSearch (event) {
   await time.sleep(2000);
   prototypeResults();
   prototypeBoxes();
-  _s_.search(params);
+  // _s_.show(colors);
   document.getElementById('homesearchbody').style.height = '0px';
   window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
 }
@@ -98,6 +100,10 @@ router
     if (document.getElementById('imagesHome')) {
       if (document.getElementById('results')) {
         document.querySelector("#resultText").innerHTML = params;
+        document.querySelector('#imagesHome').style.opacity = 0;
+        document.querySelector('#level-logo').style.opacity = 0;
+        document.querySelector('#navigation-brand').style.opacity = 1;
+        document.querySelector('#navigation-search').style.opacity = 1;
       }
     } else {
       application.innerHTML = getFile('templates/search.html');
