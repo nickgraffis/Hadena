@@ -4,6 +4,7 @@ const prototype = require('./prototype.js')
 const work = require('webworkify');
 const w = work(require('./worker.js'));
 const url = 'https://www.googleapis.com/customsearch/v1?key=' + 'AIzaSyACjaZLemAxecYCv5rZM_JQBIcEwM7t6NE' + '&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)';
+var currentDisplayVariable = localStorage.getItem('displayVariable') ? localStorage.getItem('displayVariable') : localStorage.setItem('displayVariable', 'hex');
 
 /*
 * Show the image of the box with the ID of imageid by changing the background image of the box
@@ -82,7 +83,9 @@ function show (items, startNumber) {
       document.querySelector("#" + num + "palette").style.backgroundColor = "#" + hex;
       var attribute = {image: items[i].link, color: "#" + hex};
       document.querySelector("#" + num + "bg").setAttribute('data-attribute', JSON.stringify(attribute));
-      document.querySelector("#" + num).innerHTML = "#" + hex;
+      console.log(hex);
+      console.log(hadena.hexToRGB('#' + hex));
+      document.querySelector("#" + num).innerHTML = currentDisplayVariable === 'hex' ? "#" + hex : hadena.hexToRGB('#' + hex);
       if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
         document.querySelector("#" + num + "bg").style.color = "#242424";
         document.querySelector("#" + num + "alert").style.color = "#242424";
@@ -101,7 +104,7 @@ function show (items, startNumber) {
         document.querySelector("#" + num + "palette").style.color = "#F5F5F5";
       }
       if (i === 0) {
-        document.querySelector("#koi").style.fill = "#" + hex;
+        document.querySelector("#small-koi").style.fill = "#" + hex;
       }
     }
   }
@@ -169,21 +172,20 @@ window.hideImage = function (imageid)
   }
 }
 
-const currentDisplayVariable = localStorage.getItem('displayVariable') ? localStorage.getItem('displayVariable') : localStorage.setItem('displayVariable', 'hex');
-
-/*
-* Hide the image of the box with the ID of imageid by setting background image back to null
-*/
 window.displayVariable = function ()
 {
-  if (currentDisplayVariable === 'hex') {
-    var type = 'rgb';
-    document.getElementById('displayvariable').innerHTML = 'rgb( )';
-  } else {
-    document.getElementById('displayvariable').innerHTML = '#hex';
-    var type = 'hex';
+  if (localStorage.getItem('displayVariable')) {
+    if (localStorage.getItem('displayVariable') === 'hex') {
+      console.log(localStorage.getItem('displayVariable'))
+      var type = 'rgb';
+      document.getElementById('displayvariable').innerHTML = 'rgb( )';
+    } else {
+      console.log(localStorage.getItem('displayVariable'))
+      document.getElementById('displayvariable').innerHTML = '#hex';
+      var type = 'hex';
+    }
   }
-
+  console.log(type);
   let items = document.getElementsByClassName('hex');
   console.log(items);
   for (let i = 0; i < items.length; i++) {
@@ -204,6 +206,7 @@ window.displayVariable = function ()
   }
 
   localStorage.setItem('displayVariable', type);
+  currentDisplayVariable = localStorage.getItem('displayVariable') ? localStorage.getItem('displayVariable') : localStorage.setItem('displayVariable', 'hex');
 }
 
 /*
@@ -276,6 +279,8 @@ window.changeColor = function (boxId) {
   document.querySelector("#" + box[0] + "bg").style.backgroundColor = color;
   document.querySelector("#" + box[0] + "palette").style.backgroundColor = color;
 }
+
+console.log(currentDisplayVariable);
 
 
 module.exports = {

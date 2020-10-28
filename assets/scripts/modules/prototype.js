@@ -114,6 +114,7 @@ async function loader (params) {
   }
   document.querySelector('#navigation-brand').style.opacity = 1;
   document.querySelector('#navigation-search').style.opacity = 1;
+  document.querySelector("#resultText").innerHTML = params;
   prototypeKoi();
   prototypeFooter();
 }
@@ -128,7 +129,7 @@ router
     for (let i = 0; i < 20; i++) {
       boxes[i].style.opacity = 1;
     }
-    // _s_.search(params);
+    _s_.search(params);
     if (document.getElementsByTagName('prototype-navbar').length > 0) {
       prototypeNavbar();
     }
@@ -157,6 +158,8 @@ router
       document.getElementById('navigation-brand').style.opacity = 0;
       document.getElementById('navigation-search').style.opacity = 0;
     }
+    const searchform = document.querySelector('#searchform');
+    searchform.addEventListener("submit", searchSearch);
     const homeform = document.querySelector('#homeform');
     homeform.addEventListener("submit", homeSearch);
   });
