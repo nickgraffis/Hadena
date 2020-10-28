@@ -10,6 +10,7 @@ module.exports = {
     increaseValueOfRGB: increaseValueOfRGB,
     increaseValueOfRGB: increaseValueOfRGB,
     pixelsToColors: pixelsToColors,
+    hexToRGB: hexToRGB
 };
 
 function increaseValueOfRGB(colour, percent) {
@@ -55,7 +56,7 @@ function fullColorHex (r, g, b) {
 * Convert HEX to RGB
 * Not currently in use...
 */
-var hexToRBG = function (hex) {
+function hexToRGB (hex) {
   let r = 0, g = 0, b = 0;
 
   // 3 digits
@@ -92,7 +93,7 @@ function getRandomColor(options = [], type = 'HEX') {
       return color;
     }
     else {
-      return hexToRBG(color);
+      return hexToRGB(color);
     }
   }
 }

@@ -184,19 +184,23 @@ window.displayVariable = function ()
     var type = 'hex';
   }
 
-  let items = document.getElementsByClassName(currentDisplayVariable + '_value');
+  let items = document.getElementsByClassName('hex');
   console.log(items);
   for (let i = 0; i < items.length; i++) {
-    items[i].classList = 'level-item hex ' + type + '_value';
+  console.log(items[i]);
     if (type === 'rgb') {
-      let rgbItem = items[i].innerHTML.split('rgb(')[1];
-      console.log(rgbItem);
-      let rgb = rgbItem.substring(0, str.length - 1).split(',');
-      console.log(rgb);
-      items[i].innerHTML = hadena.fullColorHex(rgb[0], rgb[1], rgb[2]);
+      console.log(hadena.hexToRGB(items[i].innerHTML));
+      items[i].innerHTML = hadena.hexToRGB(items[i].innerHTML);
     } else {
-      items[i].innerHTML = hadena.hexToRBG(items[i].innerHTML);
+      let rgbItem = items[i].innerHTML.split('rgb(')[1];
+      rgbItem = rgbItem.substring(rgbItem.length - 1, 0);
+      console.log(rgbItem);
+      let rgb = rgbItem.split(',');
+      console.log(rgb);
+      items[i].innerHTML = '#' + hadena.fullColorHex(rgb[0], rgb[1], rgb[2]);
     }
+    items[i].classList.add(type + '_value');
+    items[i].classList.remove(currentDisplayVariable + '_value');
   }
 
   currentDisplayVariable = type;
@@ -276,4 +280,5 @@ window.changeColor = function (boxId) {
 
 module.exports = {
   search: search,
+  currentDisplayVariable: currentDisplayVariable
 }
