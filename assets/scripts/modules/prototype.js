@@ -30,7 +30,8 @@ function prototypeFooter () {
 * Fill in the footer where the <prototype-nav> tag is present
 */
 function prototypeNavbar () {
-  document.querySelector('prototype-navbar').innerHTML = getFile('components/navbar.html');
+  let file = getFile('components/navbar.html');
+  document.querySelector('prototype-navbar').innerHTML = eval('`' + file + '`');
 }
 
 /*
@@ -127,12 +128,12 @@ router
     for (let i = 0; i < 20; i++) {
       boxes[i].style.opacity = 1;
     }
-    _s_.search(params);
-    if (document.getElementsByTagName('prototype-koi').length > 0) {
-      prototypeKoi();
-    }
+    // _s_.search(params);
     if (document.getElementsByTagName('prototype-navbar').length > 0) {
       prototypeNavbar();
+    }
+    if (document.getElementsByTagName('prototype-koi').length > 0) {
+      prototypeKoi();
     }
     if (document.getElementsByTagName('prototype-footer').length > 0) {
       prototypeFooter();

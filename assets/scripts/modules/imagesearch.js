@@ -169,7 +169,7 @@ window.hideImage = function (imageid)
   }
 }
 
-var currentDisplayVariable = 'hex';
+const currentDisplayVariable = localStorage.getItem('displayVariable') ? localStorage.getItem('displayVariable') : localStorage.setItem('displayVariable', 'hex');
 
 /*
 * Hide the image of the box with the ID of imageid by setting background image back to null
@@ -203,7 +203,7 @@ window.displayVariable = function ()
     items[i].classList.remove(currentDisplayVariable + '_value');
   }
 
-  currentDisplayVariable = type;
+  localStorage.setItem('displayVariable', type);
 }
 
 /*
