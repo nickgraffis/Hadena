@@ -73,10 +73,16 @@ function homeSearch (event) {
   //Begin the search
   _s_.search(params);
   //Begin the loader
-  loader();
+  loader(params);
 }
 
-async function loader () {
+function searchSearch (event) {
+  var params = document.querySelector('#images').value;
+  event.preventDefault();
+  window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
+}
+
+async function loader (params) {
   let homesearchform = document.getElementById('homesearchform');
   let hero = document.getElementById('hero-isfull');
   let homesearchbody = document.getElementById('homesearchbody');
@@ -102,7 +108,6 @@ async function loader () {
   document.getElementById('resultTextArea').style.opacity = 1;
   document.getElementById('resultTextBoxes').style.opacity = 1;
   let boxes = document.getElementsByClassName('color_box');
-  console.log(boxes);
   for (let i = 0; i < 20; i++) {
     boxes[i].style.opacity = 1;
   }
@@ -110,31 +115,30 @@ async function loader () {
   document.querySelector('#navigation-search').style.opacity = 1;
   prototypeKoi();
   prototypeFooter();
-  // _s_.show(colors);
-  // document.getElementById('homesearchbody').style.height = '0px';
-  // window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
 }
 
 router
   .add(/s\/(.*)/, (params) => {
     console.log(params);
-    if (document.getElementById('imagesHome')) {
-      if (document.getElementById('results')) {
-        document.querySelector("#resultText").innerHTML = params;
-
-      }
-    } else {
-      application.innerHTML = getFile('templates/search.html');
-      if (document.getElementsByTagName('prototype-koi').length > 0) {
-        prototypeKoi();
-      }
-      if (document.getElementsByTagName('prototype-navbar').length > 0) {
-        prototypeNavbar();
-      }
-      if (document.getElementsByTagName('prototype-footer').length > 0) {
-        prototypeFooter();
-      }
+    application.innerHTML = getFile('templates/search.html');
+    document.querySelector("#resultText").innerHTML = params;
+    prototypeBoxes();
+    let boxes = document.getElementsByClassName('color_box');
+    for (let i = 0; i < 20; i++) {
+      boxes[i].style.opacity = 1;
     }
+    _s_.search(params);
+    if (document.getElementsByTagName('prototype-koi').length > 0) {
+      prototypeKoi();
+    }
+    if (document.getElementsByTagName('prototype-navbar').length > 0) {
+      prototypeNavbar();
+    }
+    if (document.getElementsByTagName('prototype-footer').length > 0) {
+      prototypeFooter();
+    }
+    const searchform = document.querySelector('#searchform');
+    searchform.addEventListener("submit", searchSearch);
   })
   .add(/products\/(.*)\/specification\/(.*)/, (id, specification) => {
     alert(`products: ${id} specification: ${specification}`);

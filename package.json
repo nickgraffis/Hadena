@@ -21,8 +21,10 @@
   "homepage": "https://github.com/nickgraffis/Hadena#readme",
   "dependencies": {
     "@nickgraffis/kmeans": "^1.0.3",
+    "browserify": "^17.0.0",
     "bulma": "^0.9.1",
     "dotenv": "^8.2.0",
+    "envify": "^4.1.0",
     "hadenajs": "^1.1.0",
     "matematik": "^1.0.9",
     "node-sass": "^4.14.1",
