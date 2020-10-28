@@ -21,31 +21,34 @@ window.changeColorMode = function () {
 },{}],3:[function(require,module,exports){
 const hadena = require('hadenajs');
 const math = require('matematik');
-const work = require('webworkify')
+const prototype = require('./prototype.js')
+const work = require('webworkify');
 const w = work(require('./worker.js'));
+const url = 'https://www.googleapis.com/customsearch/v1?key=' + "AIzaSyACjaZLemAxecYCv5rZM_JQBIcEwM7t6NE" + '&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)';
+
+/*
+* Show the image of the box with the ID of imageid by changing the background image of the box
+*/
+var imageVisable = 0;
 
 w.addEventListener('message', ({data}) => {
   console.log(data);
     fillPalette(data);
 });
 
-var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyACjaZLemAxecYCv5rZM_JQBIcEwM7t6NE&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)";
 var items = {};
-var hexes = [];
 function search (query) {
-  console.log(query);
+  items = {};
   var request = url + "&q=" + query;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       items = JSON.parse(xhttp.responseText).items;
-      console.log(items);
       more(query, 11);
     }
   };
-  xhttp.open("GET", request, true);
-  xhttp.send();
-  return true;
+xhttp.open("GET", request, true);
+xhttp.send();
 }
 
 /*
@@ -60,41 +63,11 @@ function more (query, startNumber) {
         item = JSON.parse(xhttp.responseText).items[i];
         items.push(item);
       }
-      console.log(items);
+      show(items, 0);
     }
   };
-  xhttp.open("GET", request, true);
-  xhttp.send();
-  return true;
-}
-
-function getImages (query) {
-  search(query);
-  return items;
-}
-
-function getColors (items) {
-  for (let i = 0; i < 20; i++) {
-    let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-    let img = new Image();
-    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-    img.crossOrigin = 'Anonymous';
-    img.src = googleProxyURL + encodeURIComponent(items[i].link);
-    img.onload = function () {
-      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-      let aspectRatio = img.height / img.width;
-      canvas.width = 100;
-      canvas.height = aspectRatio * canvas.width;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      let palette = hadena.extractColorPalette(canvas, 1);
-      let hex = hadena.fullColorHex(palette[0].r, palette[0].g, palette[0].b);
-      hexes.push(hex);
-    }
-  }
-  if(hexes.length >= 20) {
-    return hexes;
-  }
+xhttp.open("GET", request, true);
+xhttp.send();
 }
 
 /*
@@ -108,37 +81,48 @@ function getColors (items) {
 * Change the color of the koi logo to the first color
 * Log errors
 */
-function show (colors) {
+function show (items, startNumber) {
   for (let i = 0; i < 20; i++) {
-    let num = math.englishify(i);
-    let hex = colors[i];
-    document.querySelector("#" + num + "bg").style.backgroundColor = "#" + hex;
-    document.querySelector("#" + num + "palette").style.backgroundColor = "#" + hex;
-    var attribute = {image: items[i].link, color: "#" + hex};
-    document.querySelector("#" + num + "bg").setAttribute('data-attribute', JSON.stringify(attribute));
-    document.querySelector("#" + num).innerHTML = "#" + hex;
-    if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
-      document.querySelector("#" + num + "bg").style.color = "#242424";
-      document.querySelector("#" + num + "alert").style.color = "#242424";
-      document.querySelector("#" + num + "palette").style.color = "#242424";
-    } else if (hadena.getColorMood("#" + hex, 4) === 'LIGHT') {
-        document.querySelector("#" + num + "bg").style.color = "#363636";
-        document.querySelector("#" + num + "alert").style.color = "#363636";
-        document.querySelector("#" + num + "palette").style.color = "#363636";
-    } else if (hadena.getColorMood("#" + hex, 4) === 'DIM') {
-      document.querySelector("#" + num + "bg").style.color = "#B5B5B5";
-      document.querySelector("#" + num + "alert").style.color = "#B5B5B5";
-      document.querySelector("#" + num + "palette").style.color = "#B5B5B5";
-    } else {
-      document.querySelector("#" + num + "bg").style.color = "#F5F5F5";
-      document.querySelector("#" + num + "alert").style.color = "#F5F5F5";
-      document.querySelector("#" + num + "palette").style.color = "#F5F5F5";
-    }
-    if (i === 0) {
-      if (document.getElementById("koi")){
-        document.getElementById("koi").style.fill = "#" + hex;
-      } else if (document.getElementById("small-koi")) {
-        document.getElementById("small-koi").style.fill = "#" + hex;
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    let img = new Image();
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    img.crossOrigin = 'Anonymous';
+    img.src = googleProxyURL + encodeURIComponent(items[i].link);
+    console.log(items[i].link);
+    img.onload = function () {
+      let num = math.englishify(i);
+      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+      let aspectRatio = img.height / img.width;
+      canvas.width = 100;
+      canvas.height = aspectRatio * canvas.width;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let palette = hadena.extractColorPalette(canvas, 1);
+      let hex = hadena.fullColorHex(palette[0].r, palette[0].g, palette[0].b);
+      document.querySelector("#" + num + "bg").style.backgroundColor = "#" + hex;
+      document.querySelector("#" + num + "palette").style.backgroundColor = "#" + hex;
+      var attribute = {image: items[i].link, color: "#" + hex};
+      document.querySelector("#" + num + "bg").setAttribute('data-attribute', JSON.stringify(attribute));
+      document.querySelector("#" + num).innerHTML = "#" + hex;
+      if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
+        document.querySelector("#" + num + "bg").style.color = "#242424";
+        document.querySelector("#" + num + "alert").style.color = "#242424";
+        document.querySelector("#" + num + "palette").style.color = "#242424";
+      } else if (hadena.getColorMood("#" + hex, 4) === 'LIGHT') {
+          document.querySelector("#" + num + "bg").style.color = "#363636";
+          document.querySelector("#" + num + "alert").style.color = "#363636";
+          document.querySelector("#" + num + "palette").style.color = "#363636";
+      } else if (hadena.getColorMood("#" + hex, 4) === 'DIM') {
+        document.querySelector("#" + num + "bg").style.color = "#B5B5B5";
+        document.querySelector("#" + num + "alert").style.color = "#B5B5B5";
+        document.querySelector("#" + num + "palette").style.color = "#B5B5B5";
+      } else {
+        document.querySelector("#" + num + "bg").style.color = "#F5F5F5";
+        document.querySelector("#" + num + "alert").style.color = "#F5F5F5";
+        document.querySelector("#" + num + "palette").style.color = "#F5F5F5";
+      }
+      if (i === 0) {
+        document.querySelector("#koi").style.fill = "#" + hex;
       }
     }
   }
@@ -183,17 +167,144 @@ console.log(palette);
     }
 }
 
-module.exports = {
-  search: search,
-  show: show,
-  getImages: getImages
+window.showImage = function (imageid)
+{
+  let num = math.englishify(imageid);
+  var box = document.querySelector("#" + num + "bg");
+  var palette = document.querySelector("#" + num + "palette");
+  var url = JSON.parse(box.getAttribute('data-attribute')).image;
+  box.style.backgroundImage = "url(" + url + ")";
+  palette.style.backgroundColor = 'transparent';
+  imageVisable = 1;
 }
 
-},{"./worker.js":7,"hadenajs":9,"matematik":10,"webworkify":11}],4:[function(require,module,exports){
+/*
+* Hide the image of the box with the ID of imageid by setting background image back to null
+*/
+window.hideImage = function (imageid)
+{
+  if (imageVisable === 1)
+  {
+    let num = math.englishify(imageid);
+    document.querySelector("#" + num + "bg").style.backgroundImage = null;
+  }
+}
+
+var currentDisplayVariable = 'hex';
+
+/*
+* Hide the image of the box with the ID of imageid by setting background image back to null
+*/
+window.displayVariable = function ()
+{
+  if (currentDisplayVariable === 'hex') {
+    var type = 'rgb';
+    document.getElementById('displayvariable').innerHTML = 'rgb( )';
+  } else {
+    document.getElementById('displayvariable').innerHTML = '#hex';
+    var type = 'hex';
+  }
+
+  let items = document.getElementsByClassName(currentDisplayVariable + '_value');
+
+  for (let i = 0; i < items.length; i++) {
+    items[i].classList = 'level-item hex ' + type + '_value';
+    if (type === 'rgb') {
+      let rgbItem = items[i].innerHTML.split('rgb(')[1];
+      console.log(rgbItem);
+      let rgb = rgbItem.substring(0, str.length - 1).split(',');
+      console.log(rgb);
+      items[i].innerHTML = hadena.fullColorHex(rgb[0], rgb[1], rgb[2]);
+    } else {
+      items[i].innerHTML = hadena.hexToRBG(items[i].innerHTML);
+    }
+  }
+
+  currentDisplayVariable = type;
+}
+
+/*
+* Copy the text of the box with an ID of hexid
+* Flash an alert for this box as well
+*/
+window.copyHex = function (hexid) {
+  let num = math.englishify(hexid);
+  document.querySelector("#" + num + "alert").style.visibility = "visible";
+  var fadeTarget = document.querySelector("#" + num + "alert");
+  var fadeEffect = setInterval(function () {
+      if (!fadeTarget.style.opacity) {
+          fadeTarget.style.opacity = 1;
+      }
+      if (fadeTarget.style.opacity > 0) {
+          fadeTarget.style.opacity -= 0.1;
+      } else {
+          clearInterval(fadeEffect);
+      }
+  }, 100);
+
+  fadeTarget.style.opacity = 1;
+  var text = document.querySelector("#" + num).innerText;
+  var elem = document.createElement("textarea");
+  document.body.appendChild(elem);
+  elem.value = text;
+  elem.select();
+  document.execCommand("copy");
+  document.body.removeChild(elem);
+}
+
+function parseId(id) {
+  var twoIds = id.split('bg');
+  var boxId = twoIds[0].split('-');
+  console.log(boxId);
+  return boxId;
+}
+
+window.changeColor = function (boxId) {
+  console.log(boxId);
+  var box = parseId(boxId);
+  var color = document.getElementById(boxId).getAttribute('data-color');
+  if (getColorMood(color, 4) === 'BRIGHT') {
+    console.log('BRINGT');
+    document.getElementById(box[0] + "bg").style.color = "#242424";
+    document.querySelector("#" + box[0] + "palette").style.color = "#242424";
+  } else if (getColorMood(color, 4) === 'LIGHT') {
+      console.log('LIGHT');
+      document.getElementById(box[0] + "bg").style.color = "#363636";
+      document.querySelector("#" + box[0] + "palette").style.color = "#363636";
+
+  } else if (getColorMood(color, 4) === 'DIM') {
+      console.log('DIM');
+      document.getElementById(box[0] + "bg").style.color = "#B5B5B5";
+      document.querySelector("#" + box[0] + "palette").style.color = "#B5B5B5";
+
+  } else {
+      console.log('DARK');
+      document.getElementById(box[0] + "bg").style.color = "#F5F5F5";
+      document.querySelector("#" + box[0] + "palette").style.color = "#F5F5F5";
+
+  }
+  var dataObject = JSON.parse(document.querySelector("#" + box[0] + "bg").getAttribute('data-attribute'));
+  var oldColor = dataObject.color;
+  var newDataObject = {image: dataObject.image, color: color};
+  document.getElementById(boxId).style.color = oldColor;
+  document.getElementById(boxId).setAttribute('data-color', oldColor);
+  document.querySelector("#" + box[0] + "bg").setAttribute('data-attribute', JSON.stringify(newDataObject));
+  document.querySelector("#" + box[0]).innerHTML = color;
+  document.querySelector("#" + box[0] + "bg").style.backgroundColor = color;
+  document.querySelector("#" + box[0] + "palette").style.backgroundColor = color;
+}
+
+
+module.exports = {
+  search: search,
+}
+
+},{"./prototype.js":4,"./worker.js":7,"hadenajs":9,"matematik":10,"webworkify":11}],4:[function(require,module,exports){
 const __ = require('./router.js');
 const time = require('./typewriter.js');
 const _s_ = require('./imagesearch.js');
 const math = require('matematik');
+const url = 'https://www.googleapis.com/customsearch/v1?key=' + "AIzaSyACjaZLemAxecYCv5rZM_JQBIcEwM7t6NE" + '&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)';
 
 const application = document.getElementById('application');
 
@@ -258,32 +369,52 @@ function prototypeBoxes () {
   }
 }
 
-/*
-* Fill in the footer where the <prototype-footer> tag is present
-*/
-function prototypeFooter () {
-
-  document.querySelector('prototype-footer').innerHTML = '<div class="hero-foot"><div class="content has-text-centered"><p><strong>派手な HADENA</strong> by <a href="https://twitter.com/nickgraffistwit">Nick Graffis</a>. Learn about the project<a href="/code"> here</a>.</p></div></div>';
-
-}
-
-async function homeSearch (event) {
+function homeSearch (event) {
   var params = document.querySelector('#imagesHome').value;
   event.preventDefault();
-  var images = _s_.getImages(params);
-  console.log(images);
-  document.getElementsByClassName('demo-wrapper')[0].style.opacity = 0;
-  document.getElementById('logo-wrapper').style.animation = 'move-logo 2s ease-in-out forwards';
-  document.getElementById('level-logo').style.animation = 'scale-logo 2s ease-in-out forwards';
-  document.getElementById('home-form-control').style.animation = 'move-search 2s ease-in-out forwards';
-  document.getElementById('home-form-wrapper').style.animation = 'scale-search 2s ease-in-out forwards';
-  document.getElementById('hero-body').classList += 'is-paddingless';
-  await time.sleep(2000);
-  prototypeResults();
+  //Begin the search
+  _s_.search(params);
+  //Begin the loader
+  loader();
+}
+
+async function loader () {
+  let homesearchform = document.getElementById('homesearchform');
+  let hero = document.getElementById('hero-isfull');
+  let homesearchbody = document.getElementById('homesearchbody');
+  let demoWrapper = document.getElementsByClassName('demo-wrapper')[0];
+  document.getElementById('homesearchform').style.animation = 'move-up 1s ease-in-out forwards';
+  demoWrapper.style.height = '125%';
+  demoWrapper.style.overflow = 'visible';
+  document.getElementsByClassName('demo_one')[0].style.animation = 'float-faster 4s ease-in-out infinite, disapear 2s ease-in-out infinite';
+  document.getElementsByClassName('demo_three')[0].style.animation = 'float-faster 5s ease-in-out infinite, disapear 2s ease-in-out infinite';
+  document.getElementsByClassName('demo_two')[0].style.animation = 'float-faster 3s ease-in-out infinite, disapear 2s ease-in-out infinite';
+  document.getElementsByClassName('demo_four')[0].style.animation = 'float-faster 2s ease-in-out infinite, disapear 1s ease-in-out infinite';
+  await time.sleep(1000);
+  demoWrapper.style.opacity = 0;
+  var div = document.createElement('DIV');
+  div.classList = 'container';
+  var resultsDiv = document.getElementById('hero-body').appendChild(div);
+  resultsDiv.innerHTML = getFile('components/searchresults.html');
   prototypeBoxes();
+  homesearchbody.remove();
+  await time.sleep(1000);
+  demoWrapper.remove();
+  hero.classList += ' is-paddingless';
+  document.getElementById('resultTextArea').style.opacity = 1;
+  document.getElementById('resultTextBoxes').style.opacity = 1;
+  let boxes = document.getElementsByClassName('color_box');
+  console.log(boxes);
+  for (let i = 0; i < 20; i++) {
+    boxes[i].style.opacity = 1;
+  }
+  document.querySelector('#navigation-brand').style.opacity = 1;
+  document.querySelector('#navigation-search').style.opacity = 1;
+  prototypeKoi();
+  prototypeFooter();
   // _s_.show(colors);
-  document.getElementById('homesearchbody').style.height = '0px';
-  window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
+  // document.getElementById('homesearchbody').style.height = '0px';
+  // window.history.pushState({page: 1}, "title 1", '/#/s/' + params);
 }
 
 router
@@ -292,10 +423,7 @@ router
     if (document.getElementById('imagesHome')) {
       if (document.getElementById('results')) {
         document.querySelector("#resultText").innerHTML = params;
-        document.querySelector('#imagesHome').style.opacity = 0;
-        document.querySelector('#level-logo').style.opacity = 0;
-        document.querySelector('#navigation-brand').style.opacity = 1;
-        document.querySelector('#navigation-search').style.opacity = 1;
+
       }
     } else {
       application.innerHTML = getFile('templates/search.html');
@@ -304,6 +432,9 @@ router
       }
       if (document.getElementsByTagName('prototype-navbar').length > 0) {
         prototypeNavbar();
+      }
+      if (document.getElementsByTagName('prototype-footer').length > 0) {
+        prototypeFooter();
       }
     }
   })
@@ -326,6 +457,10 @@ router
     const homeform = document.querySelector('#homeform');
     homeform.addEventListener("submit", homeSearch);
   });
+
+module.exports = {
+  getFile: getFile
+}
 
 },{"./imagesearch.js":3,"./router.js":5,"./typewriter.js":6,"matematik":10}],5:[function(require,module,exports){
 class Router {

@@ -121,7 +121,7 @@ body {
     background-repeat: no-repeat;
 }
 .medium .hex_alert {
-    margin-top: -120px;
+    padding-top: -150px;
     visibility: hidden;
 }
 .short {
@@ -131,7 +131,7 @@ body {
     background-repeat: no-repeat;
 }
 .short .hex_alert {
-    padding-top: 50px;
+    padding-top: -150px;
     visibility: hidden;
 }
 .long {
@@ -141,7 +141,7 @@ body {
     background-repeat: no-repeat;
 }
 .long .hex_alert {
-    padding-top: 100px;
+    padding-top: -250px;
     visibility: hidden;
 }
 .hex {
