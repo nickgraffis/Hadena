@@ -452,19 +452,16 @@ window.changeColor = function (boxId) {
   console.log(boxId);
   var box = parseId(boxId);
   var color = document.getElementById(boxId).getAttribute('data-color');
-  if (getColorMood(color, 4) === 'BRIGHT') {
+  if (hadena.getColorMood(color, 4) === 'BRIGHT') {
     console.log('BRINGT');
     document.getElementById(box[0] + "bg").style.color = "#242424";
-    document.querySelector("#" + box[0] + "palette").style.color = "#242424";
-  } else if (getColorMood(color, 4) === 'LIGHT') {
+  } else if (hadena.getColorMood(color, 4) === 'LIGHT') {
       console.log('LIGHT');
       document.getElementById(box[0] + "bg").style.color = "#363636";
-      document.querySelector("#" + box[0] + "palette").style.color = "#363636";
 
-  } else if (getColorMood(color, 4) === 'DIM') {
+  } else if (hadena.getColorMood(color, 4) === 'DIM') {
       console.log('DIM');
       document.getElementById(box[0] + "bg").style.color = "#B5B5B5";
-      document.querySelector("#" + box[0] + "palette").style.color = "#B5B5B5";
 
   } else {
       console.log('DARK');
@@ -475,10 +472,10 @@ window.changeColor = function (boxId) {
   var dataObject = JSON.parse(document.querySelector("#" + box[0] + "bg").getAttribute('data-attribute'));
   var oldColor = dataObject.color;
   var newDataObject = {image: dataObject.image, color: color};
-  document.getElementById(boxId).style.color = oldColor;
+  document.getElementById(boxId).style.backgroundColor = oldColor;
   document.getElementById(boxId).setAttribute('data-color', oldColor);
   document.querySelector("#" + box[0] + "bg").setAttribute('data-attribute', JSON.stringify(newDataObject));
-  document.querySelector("#" + box[0]).innerHTML = color;
+  document.querySelector("#" + box[0]).innerHTML = currentDisplayVariable === 'hex' ? color : hadena.hexToRGB(color);
   document.querySelector("#" + box[0] + "bg").style.backgroundColor = color;
   document.querySelector("#" + box[0] + "palette").style.backgroundColor = color;
 }
