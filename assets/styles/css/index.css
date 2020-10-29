@@ -7934,7 +7934,8 @@ body {
   background-repeat: no-repeat; }
 
 .medium .hex_alert {
-  padding-top: -150px;
+  top: -25%;
+  position: relative;
   visibility: hidden; }
 
 .short {
@@ -7944,7 +7945,8 @@ body {
   background-repeat: no-repeat; }
 
 .short .hex_alert {
-  padding-top: -150px;
+  top: -25%;
+  position: relative;
   visibility: hidden; }
 
 .long {
@@ -7954,7 +7956,8 @@ body {
   background-repeat: no-repeat; }
 
 .long .hex_alert {
-  padding-top: -250px;
+  top: -25%;
+  position: relative;
   visibility: hidden; }
 
 .hex {

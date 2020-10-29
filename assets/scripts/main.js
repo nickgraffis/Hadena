@@ -296,19 +296,15 @@ function show (items, startNumber) {
       if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
         document.querySelector("#" + num + "bg").style.color = "#242424";
         document.querySelector("#" + num + "alert").style.color = "#242424";
-        document.querySelector("#" + num + "palette").style.color = "#242424";
       } else if (hadena.getColorMood("#" + hex, 4) === 'LIGHT') {
           document.querySelector("#" + num + "bg").style.color = "#363636";
           document.querySelector("#" + num + "alert").style.color = "#363636";
-          document.querySelector("#" + num + "palette").style.color = "#363636";
       } else if (hadena.getColorMood("#" + hex, 4) === 'DIM') {
         document.querySelector("#" + num + "bg").style.color = "#B5B5B5";
         document.querySelector("#" + num + "alert").style.color = "#B5B5B5";
-        document.querySelector("#" + num + "palette").style.color = "#B5B5B5";
       } else {
         document.querySelector("#" + num + "bg").style.color = "#F5F5F5";
         document.querySelector("#" + num + "alert").style.color = "#F5F5F5";
-        document.querySelector("#" + num + "palette").style.color = "#F5F5F5";
       }
       if (i === 0) {
         document.querySelector("#small-koi").style.fill = "#" + hex;
@@ -351,7 +347,7 @@ console.log(palette);
       for (let k = 0; k < 6; k++) {
         console.log(palette[i][k]);
         document.querySelector("#" + num + '-' + math.englishify(k) + "bg").setAttribute('data-color', "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b));
-        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").style.color = "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b);
+        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").style.backgroundColor = "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b);
       }
     }
 }
