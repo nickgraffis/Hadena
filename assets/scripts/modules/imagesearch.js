@@ -12,8 +12,8 @@ var currentDisplayVariable = localStorage.getItem('displayVariable') ? localStor
 var imageVisable = 0;
 
 w.addEventListener('message', ({data}) => {
-  console.log(data);
-    fillPalette(data);
+    console.log(data.palette);
+    fillPalette(data.id, data.palette);
 });
 
 var items = {};
@@ -43,106 +43,68 @@ function more (query, startNumber) {
         item = JSON.parse(xhttp.responseText).items[i];
         items.push(item);
       }
-      show(items, 0);
+      show(items, 0, items.length);
     }
   };
 xhttp.open("GET", request, true);
 xhttp.send();
 }
 
-/*
-* For each box, there are 20...
-* Create a new ColorThief() object
-* Create a new Image() object
-* Add Google Proxy URL and image URL to Image() object, and set Cross Origin permission to Anonymous
-* Turn the resulting ColorThief() color to a HEX and change the background color of the box to that color
-* Add the HEX number to the box as text
-* Determine if the color is lightOrDark and change the text color of the box to be the opposite
-* Change the color of the koi logo to the first color
-* Log errors
-*/
-function show (items, startNumber) {
-  for (let i = 0; i < 20; i++) {
+function show (items, startNumber, itemsLength) {
+  for (let i = startNumber; i < itemsLength; i++) {
     let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-    let img = new Image();
-    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-    img.crossOrigin = 'Anonymous';
-    img.src = googleProxyURL + encodeURIComponent(items[i].link);
-    console.log(items[i].link);
-    img.onload = function () {
+    let context = canvas.getContext('2d');
+
+    let image = new Image();
+
+    let googleProxyURL =
+    'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    image.crossOrigin = 'Anonymous';
+    image.src = googleProxyURL + encodeURIComponent(items[i].link);
+    image.onload = () => {
       let num = math.englishify(i);
-      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-      let aspectRatio = img.height / img.width;
+
+      let aspectRatio = image.height / image.width;
       canvas.width = 100;
       canvas.height = aspectRatio * canvas.width;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      let palette = hadena.extractColorPalette(canvas, 1);
-      let hex = hadena.fullColorHex(palette[0].r, palette[0].g, palette[0].b);
-      document.querySelector("#" + num + "bg").style.backgroundColor = "#" + hex;
-      document.querySelector("#" + num + "palette").style.backgroundColor = "#" + hex;
-      var attribute = {image: items[i].link, color: "#" + hex};
-      document.querySelector("#" + num + "bg").setAttribute('data-attribute', JSON.stringify(attribute));
-      console.log(hex);
-      console.log(hadena.hexToRGB('#' + hex));
-      document.querySelector("#" + num).innerHTML = currentDisplayVariable === 'hex' ? "#" + hex : hadena.hexToRGB('#' + hex);
-      if (hadena.getColorMood("#" + hex, 4) === 'BRIGHT') {
-        document.querySelector("#" + num + "bg").style.color = "#242424";
-        document.querySelector("#" + num + "alert").style.color = "#242424";
-      } else if (hadena.getColorMood("#" + hex, 4) === 'LIGHT') {
-          document.querySelector("#" + num + "bg").style.color = "#363636";
-          document.querySelector("#" + num + "alert").style.color = "#363636";
-      } else if (hadena.getColorMood("#" + hex, 4) === 'DIM') {
-        document.querySelector("#" + num + "bg").style.color = "#B5B5B5";
-        document.querySelector("#" + num + "alert").style.color = "#B5B5B5";
-      } else {
-        document.querySelector("#" + num + "bg").style.color = "#F5F5F5";
-        document.querySelector("#" + num + "alert").style.color = "#F5F5F5";
-      }
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      let pixels = hadena.extractPixelData(canvas);
+      let mainColor = hadena.pixelsToColors(pixels, 1);
+
+      w.postMessage({id: num, pixels: pixels});
+
+      let hex = '#' + hadena.fullColorHex(mainColor[0].r, mainColor[0].g, mainColor[0].b);
+
+      let box = document.querySelector('#' + num);
+      let boxBg = document.querySelector('#' + num + 'bg');
+      let boxAlert = document.querySelector('#' + num + 'alert');
+      boxBg.style.backgroundColor = hex;
+      let attribute = {image: items[i].link, color: hex};
+      boxBg.setAttribute('data-attribute', JSON.stringify(attribute));
+      box.innerHTML = currentDisplayVariable === 'hex' ? hex : hadena.hexToRGB(hex);
+      let colorMood = hadena.getColorMood(hex, 4);
+      let fontColor = colorMood === 'BRIGHT' ? "#242424" :
+      colorMood === 'LIGHT' ? "#363636" :
+      colorMood === 'DIM' ? "#B5B5B5" : "#F5F5F5";
+      boxBg.style.color = fontColor;
+      boxAlert.style.color = fontColor;
       if (i === 0) {
-        document.querySelector("#small-koi").style.fill = "#" + hex;
+        document.querySelector("#small-koi").style.fill = hex;
       }
     }
   }
-  let pixels = [];
-  for (let i = 0; i < 20; i++) {
-    let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-    let img = new Image();
-    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-    img.crossOrigin = 'Anonymous';
-    img.src = googleProxyURL + encodeURIComponent(items[i].link);
-    img.onload = function () {
-      let num = math.englishify(i);
-      canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-      let aspectRatio = img.height / img.width;
-      canvas.width = 100;
-      canvas.height = aspectRatio * canvas.width;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      pixels.push(hadena.extractPixelData(canvas));
-    }
-  }
-  var timeout = setInterval(function() {
-      console.log('checking');
-    if(pixels.length > 15) { //It might never reach 20 if there is an issue with the image
-      console.log(pixels);
-      w.postMessage({data: pixels});
-      clearInterval(timeout);
-    }
-}, 100);
 }
 
-
-function fillPalette (palette) {
-console.log(palette);
-  for (let i = 0; i < palette.length; i++) {
-    let num = math.englishify(i);
-      for (let k = 0; k < 6; k++) {
-        console.log(palette[i][k]);
-        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").setAttribute('data-color', "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b));
-        document.querySelector("#" + num + '-' + math.englishify(k) + "bg").style.backgroundColor = "#" + hadena.fullColorHex(palette[i][k].r, palette[i][k].g, palette[i][k].b);
-      }
-    }
+function fillPalette (id, palette) {
+  console.log(palette);
+  console.log(id);
+  for (let i = 0; i < 6; i++) {
+    let paletteBox = document.querySelector("#" + id + '-' + math.englishify(i) + "bg");
+    let hex = '#' + hadena.fullColorHex(palette[i].r, palette[i].g, palette[i].b);
+    paletteBox.setAttribute('data-color', hex);
+    paletteBox.style.backgroundColor = hex;
+  }
 }
 
 window.showImage = function (imageid)
