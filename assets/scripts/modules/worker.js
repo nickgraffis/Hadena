@@ -1,11 +1,8 @@
 const hadena = require('hadenajs');
 
 self.addEventListener('message', ({data}) => {
-  console.log(data.data);
-  let palette = [];
-  for (let i = 0; i < data.data.length; i++) {
-      palette.push(hadena.pixelsToColors(data.data[i], 6));
-    }
-    console.log(palette);
-    self.postMessage(palette);
+  console.log(data.pixels);
+  let palette = hadena.pixelsToColors(data.pixels, 6);
+  console.log(palette);
+  self.postMessage({palette: palette, id: data.id});
 })
