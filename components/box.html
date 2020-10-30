@@ -1,24 +1,11 @@
 <div class="box color_box ${sizes[math.getRandomInt(2)]}" id="${math.englishify(i + j)}bg" style="opacity: 0; display: flex; flex-direction: column;">
   <article class="media" id="${math.englishify(i + j)}media" style="flex-grow: 1;">
     <div class="media-content">
-      <div class="content">
+      <div id="${math.englishify(i + j)}content" class="content" style="display: flex; flex-direction: column;">
         <nav class="level">
           <div class="level-left"><a class="level-item hex ${_s_.currentDisplayVariable}_value" onclick="copyHex(${i + j});" id="${math.englishify(i + j)}"></a></div>
           <div class="level-right">
             <div class="level-item"><i class="far fa-image" onmouseover="showImage(${i + j});" onmouseleave="hideImage(${i + j})"></i></div>
-          </div>
-        </nav>
-        <nav class="level">
-          <div class="level-left">
-
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <!-- <input class="slider is-fullwidth" style="margin-right: -53px; margin-top: 0; visibility: hidden;" step="1" min="0" max="100" value="50" type="range" orient="vertical">
-        <div style="margin-right: -35px;">
-
-        </div> -->
-            </div>
           </div>
         </nav>
       </div>

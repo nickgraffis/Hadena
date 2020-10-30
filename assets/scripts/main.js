@@ -268,9 +268,9 @@ function show (items, startNumber, itemsLength) {
     'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
     image.crossOrigin = 'Anonymous';
     image.src = googleProxyURL + encodeURIComponent(items[i].link);
-    image.onload = () => {
-      let num = math.englishify(i);
+    let num = math.englishify(i);
 
+    image.onload = () => {
       let aspectRatio = image.height / image.width;
       canvas.width = 100;
       canvas.height = aspectRatio * canvas.width;
@@ -299,6 +299,10 @@ function show (items, startNumber, itemsLength) {
       if (i === 0) {
         document.querySelector("#small-koi").style.fill = hex;
       }
+    }
+    image.onerror = () => {
+      document.querySelector('#' + num + 'content').innerHTML +=
+      '<span class="icon is-large has-text-danger" style="align-self: center;"><i class="fas fa-3x fa-exclamation-triangle" aria-hidden="true"></i></span>';
     }
   }
 }
@@ -355,19 +359,21 @@ window.displayVariable = function ()
   console.log(items);
   for (let i = 0; i < items.length; i++) {
   console.log(items[i]);
-    if (type === 'rgb') {
-      console.log(hadena.hexToRGB(items[i].innerHTML));
-      items[i].innerHTML = hadena.hexToRGB(items[i].innerHTML);
-    } else {
-      let rgbItem = items[i].innerHTML.split('rgb(')[1];
-      rgbItem = rgbItem.substring(rgbItem.length - 1, 0);
-      console.log(rgbItem);
-      let rgb = rgbItem.split(',');
-      console.log(rgb);
-      items[i].innerHTML = '#' + hadena.fullColorHex(rgb[0], rgb[1], rgb[2]);
+    if (items[i].innerHTML) {
+      if (type === 'rgb') {
+        console.log(hadena.hexToRGB(items[i].innerHTML));
+        items[i].innerHTML = hadena.hexToRGB(items[i].innerHTML);
+      } else {
+        let rgbItem = items[i].innerHTML.split('rgb(')[1];
+        rgbItem = rgbItem.substring(rgbItem.length - 1, 0);
+        console.log(rgbItem);
+        let rgb = rgbItem.split(',');
+        console.log(rgb);
+        items[i].innerHTML = '#' + hadena.fullColorHex(rgb[0], rgb[1], rgb[2]);
+      }
+      items[i].classList.add(type + '_value');
+      items[i].classList.remove(currentDisplayVariable + '_value');
     }
-    items[i].classList.add(type + '_value');
-    items[i].classList.remove(currentDisplayVariable + '_value');
   }
 
   localStorage.setItem('displayVariable', type);
