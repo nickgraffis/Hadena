@@ -170,6 +170,7 @@ window.displayVariable = function ()
   }
 
   localStorage.setItem('displayVariable', type);
+  console.log(localStorage.getItem('displayVariable'));
   currentDisplayVariable = localStorage.getItem('displayVariable') ? localStorage.getItem('displayVariable') : localStorage.setItem('displayVariable', 'hex');
 }
 
@@ -179,7 +180,9 @@ window.displayVariable = function ()
 */
 window.copyHex = function (hexid) {
   let num = math.englishify(hexid);
-  document.querySelector("#" + num + "alert").style.visibility = "visible";
+  let alertBox = document.querySelector("#" + num + "alert");
+  alertBox.innerHTML = currentDisplayVariable.toUpperCase() + ' copied!';
+  alertBox.style.visibility = "visible";
   var fadeTarget = document.querySelector("#" + num + "alert");
   var fadeEffect = setInterval(function () {
       if (!fadeTarget.style.opacity) {

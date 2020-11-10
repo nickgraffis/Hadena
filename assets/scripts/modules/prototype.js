@@ -2,8 +2,8 @@ const __ = require('./router.js');
 const time = require('./typewriter.js');
 const _s_ = require('./imagesearch.js');
 const math = require('matematik');
+const emoji = require('./emoji.js');
 const url = 'https://www.googleapis.com/customsearch/v1?key=' + process.env.GOOGLE_IMAGE_API_KEY + '&cx=003721172336159961663:yl9lk4zjfw1&searchType=image&num=10&fields=items(link)';
-
 const application = document.getElementById('application');
 
 const router = new __.Router({
@@ -68,6 +68,27 @@ function prototypeBoxes () {
   }
 }
 
+function emojifyParms (string) {
+  let newString = string;
+  if (string.split(' ').length > 1) {
+    //two words make it one
+    newString = '';
+    for (let i = 0; i < string.split(' ').length; i++) {
+      if (i != string.split(' ').length - 1) {
+        newString += string.split(' ')[i] + '_';
+      } else {
+        newString += string.split(' ')[i];
+      }
+    }
+  }
+
+  if (newString[newString.length - 1] === 's') {
+    newString = newString.slice(0, -1);
+  }
+
+  return newString;
+}
+
 function homeSearch (event) {
   var params = document.querySelector('#imagesHome').value;
   event.preventDefault();
@@ -114,16 +135,23 @@ async function loader (params) {
   }
   document.querySelector('#navigation-brand').style.opacity = 1;
   document.querySelector('#navigation-search').style.opacity = 1;
-  document.querySelector("#resultText").innerHTML = params;
+  let emojifiedParams = emojifyParms(params);
+  let emojiSearchResults = emoji.search(emojifiedParams);
+  let resultCount = emojiSearchResults.length;
+  let releventEmoji = resultCount > 0 ? emojiSearchResults[math.getRandomInt(resultCount - 1)].emoji : '';
+  document.querySelector("#resultText").innerHTML = params + ' ' +  releventEmoji;
   prototypeKoi();
   prototypeFooter();
 }
 
 router
   .add(/s\/(.*)/, (params) => {
-    console.log(params);
+    let emojifiedParams = emojifyParms(params);
     application.innerHTML = getFile('templates/search.html');
-    document.querySelector("#resultText").innerHTML = params;
+    let emojiSearchResults = emoji.search(emojifiedParams);
+    let resultCount = emojiSearchResults.length;
+    let releventEmoji = resultCount > 0 ? emojiSearchResults[math.getRandomInt(resultCount - 1)].emoji : '';
+    document.querySelector("#resultText").innerHTML = params + ' ' + releventEmoji;
     prototypeBoxes();
     let boxes = document.getElementsByClassName('color_box');
     for (let i = 0; i < 20; i++) {
