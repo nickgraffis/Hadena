@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="assets/styles/css/index.css">
+<style>
+#icon-eye {
+width: 30px;
+margin: auto;
+overflow: auto;
+/* set the icon color */
+color: white;
+z-index: 10;
+}
+
+<style>
+     #eye {
+       /* set these to blink faster/slower */
+       --duration-blink: .2s;
+       --duration-lashes: .2s;
+
+       /* calculated and fixed vars */
+       --delay-lashes: var(--duration-blink);
+       --duration-pupil: .1s;
+       --delay-pupil: calc(var(--duration-blink)*2/3);
+     }
+
+     #eye-bottom, #eye-top { stroke-linecap: round; }
+
+     #eye-top, #eye-lashes { transition: var(--duration-blink) ease-in; }
+
+     #eye-pupil {
+       opacity: 0;
+       transition: opacity var(--duration-pupil) var(--delay-pupil) ease;
+     }
+
+     /* open state */
+     .eye-open #eye-top,
+     .eye-open #eye-lashes {
+       transform: rotateX(.5turn);
+       animation: scaleUp var(--duration-lashes) var(--delay-lashes) ease-in-out;
+     }
+
+     .eye-open #eye-pupil { opacity: 1; }
+
+     /* close state */
+     .eye-close #eye-lashes { animation: scaleDown var(--duration-lashes) var(--duration-blink) ease-in-out; }
+
+     .eye-close #eye-pupil { opacity: 0; }
+
+     /* keyfranes */
+     @keyframes scaleUp {
+       50% { transform: rotateX(.5turn) scaleY(1.15); }
+       to { transform: rotateX(.5turn) scaleY(1); }
+     }
+
+     @keyframes scaleDown {
+       50% { transform: scaleY(1.15); }
+       to { transform: scaleY(1); }
+     }
+   </style>
+</style>
+<div class="box color_box short" id="zerobg" style="opacity: 1; display: flex; flex-direction: column; background-color: rgb(104, 174, 219); color: rgb(54, 54, 54);" data-attribute="{&quot;image&quot;:&quot;https://cdn.britannica.com/88/188088-050-B2B457A0/dolphins-blue-sea-mammal-sky.jpg&quot;,&quot;color&quot;:&quot;#68aedb&quot;}">
+  <article class="media" id="zeromedia" style="flex-grow: 1;">
+    <div class="media-content">
+      <div id="zerocontent" class="content" style="display: flex; flex-direction: column;">
+        <nav class="level">
+          <div class="level-left"><a class="level-item hex hex_value" onclick="copyHex(0);" id="zero">#68aedb</a></div>
+          <div class="level-right">
+            <div class="level-item">
+        
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </article>
+  <div class="has-text-centered has-text-weight-bold subtitle hex_alert" id="zeroalert" style="color: rgb(54, 54, 54);"></div>
+  <div style="align-self: flex-start;">
+    <nav class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <div class="left-wrapper has-background-white" style="border-radius: 50px; border: none; box-shadow: 0 0.5em 1em -0.125em rgba(54, 54, 54, 0.1), 0 0px 0 1px rgba(54, 54, 54, 0.02)">
+            <div id="left-slide" style="display: flex; flex-direction: row; padding: 10px; border-radius: 50px;">
+              <div id="zero-zerobg" onclick="changeColor('zero-zerobg')" class="color" style="height: 20px; width: 25px; border-top-left-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(65, 179, 230);" data-color="#41b3e6"> </div>
+              <div id="zero-onebg" onclick="changeColor('zero-onebg')" class="color" style="height: 20px; width: 25px; background-color: rgb(28, 67, 112);" data-color="#1c4370"> </div>
+              <div id="zero-twobg" onclick="changeColor('zero-twobg')" class="color" style="height: 20px; width: 25px; background-color: rgb(46, 105, 158);" data-color="#2e699e"> </div>
+              <div id="zero-threebg" onclick="changeColor('zero-threebg')" class="color" style="height: 20px; width: 25px; background-color: rgb(122, 182, 226);" data-color="#7ab6e2"> </div>
+              <div id="zero-fourbg" onclick="changeColor('zero-fourbg')" class="color" style="height: 20px; width: 25px; background-color: rgb(69, 148, 208);" data-color="#4594d0"> </div>
+              <div id="zero-fivebg" onclick="changeColor('zero-fivebg')" class="color" style="height: 20px; width: 25px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; background-color: rgb(196, 226, 246);" data-color="#c4e2f6"> </div>
+            </div>
+            <a id="zeropalette" class="palette-scroll button has-background-white" style="border: none; border-radius: 50px; z-index: 10;">
+              <span class="icon is-size-5 has-text-dark"><i class="fas fa-palette" aria-hidden="true"></i></span>
+            </a>
+          </div>
+        </div>
+        <div class="level-right">
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>

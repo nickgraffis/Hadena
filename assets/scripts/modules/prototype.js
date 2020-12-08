@@ -57,7 +57,7 @@ function prototypeKoi () {
 function prototypeBoxes () {
   var sizes = ["short", "medium", "long"];
   var count = 0;
-  var file = getFile('components/box.html');
+  var file = getFile('components/box.html?v=2');
   for (let j = 0; j < 20; j = j + 5)
   {
     for (let i = 0; i < 5; i++)

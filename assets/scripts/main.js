@@ -601,6 +601,10 @@ function show (items, startNumber, itemsLength) {
       colorMood === 'DIM' ? "#B5B5B5" : "#F5F5F5";
       boxBg.style.color = fontColor;
       boxAlert.style.color = fontColor;
+      document.querySelector('#eye-lashes-' + num).style.stroke = fontColor;
+      document.querySelector('#eye-bottom-' + num).style.stroke = fontColor;
+      document.querySelector('#eye-top-' + num).style.stroke = fontColor;
+      document.querySelector('#eye-pupil-' + num).style.fill = fontColor;
       if (i === 0) {
         document.querySelector("#small-koi").style.fill = hex;
       }
@@ -626,6 +630,8 @@ function fillPalette (id, palette) {
 window.showImage = function (imageid)
 {
   let num = math.englishify(imageid);
+  document.querySelector('#icon-eye-' + num).classList.remove('eye-close');
+  document.querySelector('#icon-eye-' + num).classList.add('eye-open');
   var box = document.querySelector("#" + num + "bg");
   var palette = document.querySelector("#" + num + "palette");
   var url = JSON.parse(box.getAttribute('data-attribute')).image;
@@ -642,6 +648,8 @@ window.hideImage = function (imageid)
   if (imageVisable === 1)
   {
     let num = math.englishify(imageid);
+    document.querySelector('#icon-eye-' + num).classList.add('eye-close');
+    document.querySelector('#icon-eye-' + num).classList.remove('eye-open');
     document.querySelector("#" + num + "bg").style.backgroundImage = null;
   }
 }
@@ -825,7 +833,7 @@ function prototypeKoi () {
 function prototypeBoxes () {
   var sizes = ["short", "medium", "long"];
   var count = 0;
-  var file = getFile('components/box.html');
+  var file = getFile('components/box.html?v=2');
   for (let j = 0; j < 20; j = j + 5)
   {
     for (let i = 0; i < 5; i++)
